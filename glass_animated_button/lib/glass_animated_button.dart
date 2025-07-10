@@ -4,17 +4,37 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 /// A stylish, animated button with a frosted glass (glassmorphism) effect.
-/// Supports blur, scale animation, text styling, and optional icon.
+///
+/// This widget supports blur, scaling animation on tap, optional icons,
+/// customizable text styling, and rounded corners.
 class GlassAnimatedButton extends StatefulWidget {
+  /// The text displayed inside the button.
   final String text;
-  final VoidCallback onPressed;
-  final double blur;
-  final double borderRadius;
-  final Color color;
-  final TextStyle? textStyle;
-  final EdgeInsetsGeometry padding;
-  final Widget? icon; // Optional leading icon
 
+  /// Called when the button is tapped.
+  final VoidCallback onPressed;
+
+  /// The intensity of the blur effect.
+  ///
+  /// Higher values make the background more blurry.
+  final double blur;
+
+  /// The border radius of the button's corners.
+  final double borderRadius;
+
+  /// The semi-transparent background color of the button.
+  final Color color;
+
+  /// Custom text style for the button label.
+  final TextStyle? textStyle;
+
+  /// Padding around the button content (icon and text).
+  final EdgeInsetsGeometry padding;
+
+  /// Optional icon displayed before the text.
+  final Widget? icon;
+
+  /// Creates a [GlassAnimatedButton] with customizable glass effect and animation.
   const GlassAnimatedButton({
     super.key,
     required this.text,
