@@ -1,4 +1,4 @@
-## 1.0.2
+## 1.0.3
 
 - Refactored GlassAnimatedButton for better structure
 - Added optional `icon` widget support
