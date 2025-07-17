@@ -2,6 +2,7 @@ library glass_animated_button;
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// A stylish, animated button with a frosted glass (glassmorphism) effect.
 ///
@@ -34,6 +35,27 @@ class GlassAnimatedButton extends StatefulWidget {
   /// Optional icon displayed before the text.
   final Widget? icon;
 
+  /// The duration of the tap animation.
+  final Duration animationDuration;
+
+  /// The curve of the tap animation.
+  final Curve animationCurve;
+
+  /// Whether the button is in a loading state.
+  final bool isLoading;
+
+  /// Whether the button is disabled.
+  final bool isDisabled;
+
+  /// Optional shadow or glow effect for the button.
+  final List<BoxShadow>? boxShadow;
+
+  /// Optional gradient background for the button. Overrides [color] if provided.
+  final Gradient? gradient;
+
+  /// Whether to enable haptic feedback on tap.
+  final bool enableHapticFeedback;
+
   /// Creates a [GlassAnimatedButton] with customizable glass effect and animation.
   const GlassAnimatedButton({
     super.key,
@@ -45,6 +67,13 @@ class GlassAnimatedButton extends StatefulWidget {
     this.textStyle,
     this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
     this.icon,
+    this.animationDuration = const Duration(milliseconds: 100),
+    this.animationCurve = Curves.easeOut,
+    this.isLoading = false,
+    this.isDisabled = false,
+    this.boxShadow,
+    this.gradient,
+    this.enableHapticFeedback = false,
   });
 
   @override
@@ -62,13 +91,13 @@ class _GlassAnimatedButtonState extends State<GlassAnimatedButton>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 100),
+      duration: widget.animationDuration,
       lowerBound: 0.0,
       upperBound: 0.1,
     );
 
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+      CurvedAnimation(parent: _controller, curve: widget.animationCurve),
     );
   }
 
@@ -84,49 +113,91 @@ class _GlassAnimatedButtonState extends State<GlassAnimatedButton>
 
   @override
   Widget build(BuildContext context) {
+    final bool effectiveDisabled = widget.isDisabled || widget.isLoading;
+    void handleTap() {
+      if (widget.enableHapticFeedback) {
+        HapticFeedback.lightImpact();
+      }
+      widget.onPressed();
+    }
     return GestureDetector(
-      onTap: widget.onPressed,
-      onTapDown: _onTapDown,
-      onTapUp: _onTapUp,
-      onTapCancel: _onTapCancel,
-      child: AnimatedBuilder(
-        animation: _scaleAnimation,
-        builder: (context, child) => Transform.scale(
-          scale: _scaleAnimation.value,
-          child: child,
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(widget.borderRadius),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: widget.blur,
-              sigmaY: widget.blur,
+      onTap: effectiveDisabled ? null : handleTap,
+      onTapDown: effectiveDisabled ? null : _onTapDown,
+      onTapUp: effectiveDisabled ? null : _onTapUp,
+      onTapCancel: effectiveDisabled ? null : _onTapCancel,
+      child: FocusableActionDetector(
+        enabled: !effectiveDisabled,
+        onShowFocusHighlight: (_) => setState(() {}),
+        shortcuts: <LogicalKeySet, Intent>{
+          LogicalKeySet(LogicalKeyboardKey.enter): ActivateIntent(),
+          LogicalKeySet(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (intent) => handleTap(),
+          ),
+        },
+        child: Semantics(
+          button: true,
+          enabled: !effectiveDisabled,
+          label: widget.text,
+          value: widget.isLoading ? 'Loading' : null,
+          child: AnimatedBuilder(
+            animation: _scaleAnimation,
+            builder: (context, child) => Transform.scale(
+              scale: _scaleAnimation.value,
+              child: child,
             ),
-            child: Container(
-              padding: widget.padding,
-              decoration: BoxDecoration(
-                color: widget.color,
+            child: Opacity(
+              opacity: effectiveDisabled ? 0.6 : 1.0,
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(widget.borderRadius),
-                border: Border.all(color: Colors.white24),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (widget.icon != null) ...[
-                    widget.icon!,
-                    const SizedBox(width: 8),
-                  ],
-                  Text(
-                    widget.text,
-                    style: widget.textStyle ??
-                        const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: widget.blur,
+                    sigmaY: widget.blur,
                   ),
-                ],
+                  child: Container(
+                    padding: widget.padding,
+                    decoration: BoxDecoration(
+                      color: widget.gradient == null ? widget.color : null,
+                      gradient: widget.gradient,
+                      borderRadius: BorderRadius.circular(widget.borderRadius),
+                      border: Border.all(color: Colors.white24),
+                      boxShadow: widget.boxShadow,
+                    ),
+                    child: widget.isLoading
+                        ? SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                widget.textStyle?.color ?? Colors.white,
+                              ),
+                              strokeWidth: 2.2,
+                            ),
+                          )
+                        : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (widget.icon != null) ...[
+                                widget.icon!,
+                                const SizedBox(width: 8),
+                              ],
+                              Text(
+                                widget.text,
+                                style: widget.textStyle ??
+                                    const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              ),
+                            ],
+                          ),
+                  ),
+                ),
               ),
             ),
           ),

@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Example App",
+			"type": "shell",
+			"command": "flutter",
+			"args": [
+				"run"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/example"
+			},
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

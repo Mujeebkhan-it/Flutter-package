@@ -1,5 +1,8 @@
-## 1.0.3
+## 1.0.4
 
-- Refactored GlassAnimatedButton for better structure
-- Added optional `icon` widget support
-- Improved animation and styling
+- Customizable animation duration and curve
+- Loading and disabled state support
+- Optional shadow/glow effect (boxShadow)
+- Gradient background support
+- Optional haptic feedback on tap
+- Accessibility improvements (semantics, keyboard support)

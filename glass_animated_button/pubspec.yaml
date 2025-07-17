@@ -1,13 +1,13 @@
 name: glass_animated_button
 description: A customizable animated glassmorphic button for Flutter.
-version: 1.0.3
+version: 1.0.4
 
 homepage: https://github.com/Mujeebkhan-it/Flutter-package/tree/main/glass_animated_button
 repository: https://github.com/Mujeebkhan-it/Flutter-package
 issue_tracker: https://github.com/Mujeebkhan-it/Flutter-package/issues
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=2.19.0 <4.0.0"
 
 dependencies:
   flutter:
