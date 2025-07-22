@@ -1,5 +1,7 @@
 # glass_animated_button
 
+![Screenshot](ss.jpg)
+
 A beautiful animated button with a frosted glass (glassmorphism) effect.  
 You can customize text, blur, color, animation, gradients, shadow, and more.
 
@@ -13,34 +15,23 @@ You can customize text, blur, color, animation, gradients, shadow, and more.
 - Loading and disabled states
 - Haptic feedback on tap (optional)
 - Accessibility: semantics and keyboard support
+- **NEW:** Background image support (asset or network)
 
 ## Usage
 
 ```dart
+// Asset image background
 GlassAnimatedButton(
-  text: "Click Me",
-  onPressed: () {
-    print("Tapped!");
-  },
-  blur: 10,
-  borderRadius: 20,
-  color: Colors.white.withOpacity(0.2),
-  animationDuration: Duration(milliseconds: 200),
-  animationCurve: Curves.easeInOut,
-  icon: Icon(Icons.touch_app, color: Colors.white),
-  boxShadow: [
-    BoxShadow(
-      color: Colors.black.withOpacity(0.2),
-      blurRadius: 16,
-      offset: Offset(0, 6),
-    ),
-  ],
-  gradient: LinearGradient(
-    colors: [Colors.blueAccent.withOpacity(0.3), Colors.purpleAccent.withOpacity(0.3)],
-  ),
-  enableHapticFeedback: true,
-  isLoading: false,
-  isDisabled: false,
+  text: "With Asset BG",
+  onPressed: () {},
+  backgroundImage: AssetImage('assets/bg.jpg'),
+)
+
+// Network image background
+GlassAnimatedButton(
+  text: "With Network BG",
+  onPressed: () {},
+  backgroundImage: NetworkImage('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80'),
 )
 ```
 
@@ -59,12 +50,5 @@ GlassAnimatedButton(
 - Fully accessible with screen readers
 - Keyboard support (Enter/Space)
 
-
-# glass_animated_button
-![Screenshot](ss.jpg)
-A beautiful animated button with a frosted glass (glassmorphism) effect.  
-...
-
 ---
 See the `example/` for a full demo.
-

@@ -56,6 +56,9 @@ class GlassAnimatedButton extends StatefulWidget {
   /// Whether to enable haptic feedback on tap.
   final bool enableHapticFeedback;
 
+  /// Optional background image for the button (asset, network, etc.).
+  final ImageProvider? backgroundImage;
+
   /// Creates a [GlassAnimatedButton] with customizable glass effect and animation.
   const GlassAnimatedButton({
     super.key,
@@ -74,6 +77,7 @@ class GlassAnimatedButton extends StatefulWidget {
     this.boxShadow,
     this.gradient,
     this.enableHapticFeedback = false,
+    this.backgroundImage,
   });
 
   @override
@@ -120,6 +124,7 @@ class _GlassAnimatedButtonState extends State<GlassAnimatedButton>
       }
       widget.onPressed();
     }
+
     return GestureDetector(
       onTap: effectiveDisabled ? null : handleTap,
       onTapDown: effectiveDisabled ? null : _onTapDown,
@@ -152,51 +157,63 @@ class _GlassAnimatedButtonState extends State<GlassAnimatedButton>
               opacity: effectiveDisabled ? 0.6 : 1.0,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(widget.borderRadius),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: widget.blur,
-                    sigmaY: widget.blur,
-                  ),
-                  child: Container(
-                    padding: widget.padding,
-                    decoration: BoxDecoration(
-                      color: widget.gradient == null ? widget.color : null,
-                      gradient: widget.gradient,
-                      borderRadius: BorderRadius.circular(widget.borderRadius),
-                      border: Border.all(color: Colors.white24),
-                      boxShadow: widget.boxShadow,
+                child: Stack(
+                  fit: StackFit.passthrough,
+                  children: [
+                    if (widget.backgroundImage != null)
+                      Positioned.fill(
+                        child: Image(
+                          image: widget.backgroundImage!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: widget.blur,
+                        sigmaY: widget.blur,
+                      ),
+                      child: Container(
+                        padding: widget.padding,
+                        decoration: BoxDecoration(
+                          color: widget.gradient == null && widget.backgroundImage == null ? widget.color : null,
+                          gradient: widget.gradient,
+                          borderRadius: BorderRadius.circular(widget.borderRadius),
+                          border: Border.all(color: Colors.white24),
+                          boxShadow: widget.boxShadow,
+                        ),
+                        child: widget.isLoading
+                            ? SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    widget.textStyle?.color ?? Colors.white,
+                                  ),
+                                  strokeWidth: 2.2,
+                                ),
+                              )
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (widget.icon != null) ...[
+                                    widget.icon!,
+                                    const SizedBox(width: 8),
+                                  ],
+                                  Text(
+                                    widget.text,
+                                    style: widget.textStyle ??
+                                        const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                      ),
                     ),
-                    child: widget.isLoading
-                        ? SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                widget.textStyle?.color ?? Colors.white,
-                              ),
-                              strokeWidth: 2.2,
-                            ),
-                          )
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (widget.icon != null) ...[
-                                widget.icon!,
-                                const SizedBox(width: 8),
-                              ],
-                              Text(
-                                widget.text,
-                                style: widget.textStyle ??
-                                    const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                              ),
-                            ],
-                          ),
-                  ),
+                  ],
                 ),
               ),
             ),
