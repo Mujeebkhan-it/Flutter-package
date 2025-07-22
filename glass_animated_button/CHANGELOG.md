@@ -7,6 +7,6 @@
 - Optional haptic feedback on tap
 - Accessibility improvements (semantics, keyboard support)
 
-## 1.2.0
+## 1.0.8
 
 - Added backgroundImage parameter to GlassAnimatedButton (supports asset and network images as button background)

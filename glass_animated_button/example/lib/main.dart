@@ -58,7 +58,6 @@ class _MyAppState extends State<MyApp> {
                         offset: Offset(0, 6),
                       ),
                     ],
-                   
                     enableHapticFeedback: true,
                     isLoading: _loading,
                     isDisabled: _disabled,
@@ -73,7 +72,10 @@ class _MyAppState extends State<MyApp> {
                     borderRadius: 16,
                     color: Colors.white24,
                     isDisabled: _loading,
-                    backgroundImage: NetworkImage("https://wallpaper-mania.com/wp-content/uploads/2018/09/High_resolution_wallpaper_background_ID_77701901704.jpg"),)],
+                    backgroundImage: NetworkImage(
+                        "https://wallpaper-mania.com/wp-content/uploads/2018/09/High_resolution_wallpaper_background_ID_77701901704.jpg"),
+                  )
+                ],
               ),
             ),
           ],

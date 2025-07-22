@@ -175,9 +175,13 @@ class _GlassAnimatedButtonState extends State<GlassAnimatedButton>
                       child: Container(
                         padding: widget.padding,
                         decoration: BoxDecoration(
-                          color: widget.gradient == null && widget.backgroundImage == null ? widget.color : null,
+                          color: widget.gradient == null &&
+                                  widget.backgroundImage == null
+                              ? widget.color
+                              : null,
                           gradient: widget.gradient,
-                          borderRadius: BorderRadius.circular(widget.borderRadius),
+                          borderRadius:
+                              BorderRadius.circular(widget.borderRadius),
                           border: Border.all(color: Colors.white24),
                           boxShadow: widget.boxShadow,
                         ),
